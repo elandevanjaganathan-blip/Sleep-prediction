@@ -49,6 +49,9 @@ export async function predictSleepDisorder(data: SleepFormData): Promise<Predict
   if (!baseUrl) {
     throw new Error('The prediction service is not connected yet. Set VITE_API_BASE_URL to your Python API address to enable predictions.');
   }
+
+
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 30000);
   try {
