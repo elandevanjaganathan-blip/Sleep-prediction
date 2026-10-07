@@ -6,7 +6,7 @@ An end-to-end Machine Learning web application designed to assess sleep health a
 
 ## Project Overview
 
-This project pairs an interactive, accessible React + TypeScript frontend with a high-performance Python FastAPI backend. The machine learning pipeline trains, evaluates, and compares multiple classification models (**Logistic Regression**, **Random Forest**, and **Support Vector Machine**) on the **Sleep Health and Lifestyle Dataset**, deploying the highest-accuracy model with full preprocessing preservation.
+This project pairs an interactive React + TypeScript frontend with a high-performance Python FastAPI backend. The machine learning pipeline trains, evaluates, and compares multiple classification models (**Logistic Regression**, **Random Forest**, and **Support Vector Machine**) on the **Sleep Health and Lifestyle Dataset**, deploying the highest-accuracy model with full preprocessing preservation.
 
 ---
 
@@ -23,7 +23,7 @@ This project pairs an interactive, accessible React + TypeScript frontend with a
                     HTTP POST │ /predict
                     (JSON)    ▼
 +-------------------------------------------------------------+
-|                     FastAPI Backend                         |
+|               FastAPI Backend (Vercel API / Uvicorn)        |
 |  - Request schema validation (Pydantic)                     |
 |  - CORS middleware support                                  |
 |  - REST endpoints: GET /, GET /health, POST /predict        |
@@ -47,6 +47,7 @@ This project pairs an interactive, accessible React + TypeScript frontend with a
 - **Frontend**: React 19, TypeScript, TanStack Router, Tailwind CSS, Lucide Icons, Zod, React Hook Form
 - **Backend**: Python 3.12, FastAPI, Uvicorn, Pydantic
 - **Machine Learning**: Scikit-Learn, Pandas, NumPy, Joblib
+- **Deployment**: Vercel (Serverless Python + Vite Frontend)
 
 ---
 
@@ -54,6 +55,8 @@ This project pairs an interactive, accessible React + TypeScript frontend with a
 
 ```
 Sleep-prediction/
+├── api/
+│   └── index.py                    # Vercel serverless function entrypoint
 ├── backend/
 │   ├── app.py                      # FastAPI application
 │   ├── train.py                    # ML model training and evaluation script
@@ -68,7 +71,8 @@ Sleep-prediction/
 │   │   ├── metadata.pkl                        # Model metrics & metadata
 │   │   └── metadata.json                       # Readable evaluation results
 │   └── README.md
-│
+├── vercel.json                     # Vercel serverless routing configuration
+├── requirements.txt                # Root requirements for Vercel Python runtime
 ├── src/                            # React application source code
 │   ├── components/                 # UI & Form components
 │   ├── routes/                     # TanStack Router pages
@@ -80,7 +84,34 @@ Sleep-prediction/
 
 ---
 
-## Getting Started
+## Deploying on Vercel
+
+### Option 1: Vercel GitHub Integration (Recommended)
+
+1. Push your repository to GitHub (`git push origin main`).
+2. Go to your [Vercel Dashboard](https://vercel.com/dashboard) and click **"Add New"** $\rightarrow$ **"Project"**.
+3. Import your GitHub repository `Sleep-prediction`.
+4. Vercel automatically detects `vercel.json`, `requirements.txt`, and `api/index.py`.
+5. Under **Environment Variables** (Optional):
+   - Set `VITE_API_BASE_URL` to your Vercel deployment URL e.g. `https://your-project.vercel.app` (or leave empty if using the single-domain rewrite).
+6. Click **Deploy**. Vercel will build both the React frontend and Python FastAPI backend automatically!
+
+---
+
+### Option 2: Deploy via Vercel CLI
+
+In your terminal at the project root:
+
+```bash
+npm install -g vercel
+vercel
+```
+
+Follow the prompts to deploy instantly to your Vercel account.
+
+---
+
+## Local Development Setup
 
 ### 1. Backend Setup
 
@@ -88,23 +119,8 @@ Open a terminal and navigate to the `backend` directory:
 
 ```bash
 cd backend
-```
-
-Install the Python dependencies:
-
-```bash
 pip install -r requirements.txt
-```
-
-Train and evaluate the machine learning models:
-
-```bash
 python train.py
-```
-
-Start the FastAPI development server:
-
-```bash
 uvicorn app:app --reload --port 8000
 ```
 
@@ -119,21 +135,9 @@ The backend will be available at:
 
 In a new terminal window at the project root:
 
-Create your local environment file (optional if default is `http://localhost:8000`):
-
 ```bash
 cp .env.example .env.local
-```
-
-Install frontend dependencies:
-
-```bash
 npm install
-```
-
-Start the frontend development server:
-
-```bash
 npm run dev
 ```
 
