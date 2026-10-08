@@ -1,13 +1,3 @@
 {
-  "version": 2,
-  "rewrites": [
-    {
-      "source": "/api/predict",
-      "destination": "/api/predict.py"
-    },
-    {
-      "source": "/api/health",
-      "destination": "/api/health.py"
-    }
-  ]
+  "$schema": "https://openapi.vercel.sh/vercel.json"
 }

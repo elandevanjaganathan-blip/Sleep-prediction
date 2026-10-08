@@ -1,13 +1,11 @@
 """
-Vercel Serverless Function - Sleep Disorder Classification API
-Endpoints:
-- POST /api/predict (also /predict) : Model inference
-- GET  /api/health  (also /health)  : Health check status
+FastAPI Backend Entrypoint for Sleep Disorder Classification
+Single Vercel Serverless Function entrypoint containing /api/health and /api/predict.
 """
 
 import re
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 import joblib
 import numpy as np
 import pandas as pd
@@ -16,11 +14,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 
 # ---------------------------------------------------------------------------
-# App Initialization & CORS
+# 1. FastAPI App Initialization & CORS
 # ---------------------------------------------------------------------------
 app = FastAPI(
     title="Sleep Disorder Classification API",
-    description="Machine Learning API for predicting sleep disorders (None, Insomnia, Sleep Apnea).",
+    description="Machine Learning API predicting sleep disorders (None, Insomnia, Sleep Apnea).",
     version="2.0.0"
 )
 
@@ -33,7 +31,7 @@ app.add_middleware(
 )
 
 # ---------------------------------------------------------------------------
-# Model Loader (Cached Singleton)
+# 2. Model Pipeline Loader (Singleton using Pathlib)
 # ---------------------------------------------------------------------------
 _model_pipeline = None
 
@@ -41,7 +39,6 @@ _model_pipeline = None
 def get_model():
     global _model_pipeline
     if _model_pipeline is None:
-        # Resolve path relative to repository root
         current_file = Path(__file__).resolve()
         candidate_paths = [
             current_file.parent.parent / "ml" / "model" / "sleep_disorder_model.pkl",
@@ -57,8 +54,8 @@ def get_model():
 
         if model_path is None:
             raise FileNotFoundError(
-                f"Model artifact 'sleep_disorder_model.pkl' not found in candidate paths: {candidate_paths}. "
-                "Please run 'python ml/train.py' first."
+                f"Model file 'sleep_disorder_model.pkl' not found in candidate paths: {candidate_paths}. "
+                "Ensure 'python ml/train.py' has been run."
             )
 
         _model_pipeline = joblib.load(model_path)
@@ -66,31 +63,41 @@ def get_model():
 
 
 # ---------------------------------------------------------------------------
-# Request & Response Schemas
+# 3. Pydantic Schemas & Field Validations
 # ---------------------------------------------------------------------------
+VALID_OCCUPATIONS = [
+    "Accountant", "Doctor", "Engineer", "Lawyer", "Manager", "Nurse",
+    "Sales Representative", "Salesperson", "Scientist", "Software Engineer", "Teacher"
+]
+
+VALID_BMI_CATEGORIES = ["Normal", "Normal Weight", "Overweight", "Obese"]
+
+
 class PredictionInput(BaseModel):
     gender: Literal["Male", "Female"]
     age: int = Field(..., ge=1, le=120, description="Age in years")
     occupation: str = Field(..., min_length=1, max_length=100, description="Occupation")
-    sleep_duration: float = Field(..., ge=0.0, le=24.0, description="Sleep duration in hours")
+    sleep_duration: float = Field(..., ge=1.0, le=24.0, description="Sleep duration in hours")
     quality_of_sleep: int = Field(..., ge=1, le=10, description="Quality of sleep from 1 to 10")
-    physical_activity_level: int = Field(..., ge=0, le=1440, description="Physical activity in minutes/day")
+    physical_activity_level: int = Field(..., ge=0, le=720, description="Daily physical activity in minutes")
     stress_level: int = Field(..., ge=1, le=10, description="Stress level from 1 to 10")
     bmi_category: str = Field(..., min_length=1, max_length=50, description="BMI Category")
     blood_pressure: str = Field(..., min_length=3, max_length=7, description="Blood pressure e.g. 120/80")
-    heart_rate: int = Field(..., ge=20, le=250, description="Resting heart rate in bpm")
-    daily_steps: int = Field(..., ge=0, le=100000, description="Daily steps count")
+    heart_rate: int = Field(..., ge=30, le=220, description="Resting heart rate in bpm")
+    daily_steps: int = Field(..., ge=0, le=50000, description="Daily steps count")
 
     @field_validator("blood_pressure")
     @classmethod
     def validate_blood_pressure(cls, v: str) -> str:
+        v_clean = v.strip()
         pattern = r"^\d{2,3}/\d{2,3}$"
-        if not re.match(pattern, v.strip()):
-            raise ValueError("Blood pressure must be in format 'systolic/diastolic', e.g. '120/80'")
-        systolic, diastolic = [int(p) for p in v.split("/")]
+        if not re.match(pattern, v_clean):
+            raise ValueError("Blood pressure must be in systolic/diastolic format (e.g. 120/80)")
+        parts = [int(p) for p in v_clean.split("/")]
+        systolic, diastolic = parts[0], parts[1]
         if not (60 <= systolic <= 250 and 30 <= diastolic <= 150 and systolic > diastolic):
-            raise ValueError("Please provide realistic blood pressure values (e.g. 120/80)")
-        return v.strip()
+            raise ValueError("Enter realistic blood pressure values (e.g. 120/80)")
+        return v_clean
 
 
 class PredictionOutput(BaseModel):
@@ -103,22 +110,20 @@ class HealthOutput(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Core Prediction Logic
+# 4. Inference Logic
 # ---------------------------------------------------------------------------
-def execute_prediction(data: PredictionInput) -> PredictionOutput:
+def run_inference(data: PredictionInput) -> PredictionOutput:
     pipeline = get_model()
 
-    # Feature transformation
-    bp_parts = data.blood_pressure.split("/")
-    systolic_bp = float(bp_parts[0])
-    diastolic_bp = float(bp_parts[1])
+    # Parse Blood Pressure into numeric systolic and diastolic
+    sys_bp, dia_bp = [float(p) for p in data.blood_pressure.split("/")]
 
-    # Normalize BMI category
+    # Normalize BMI category to match training set ('Normal Weight' -> 'Normal')
     bmi = data.bmi_category.strip()
     if bmi.lower() in ["normal weight", "normal"]:
         bmi = "Normal"
 
-    # Construct feature DataFrame matching trained pipeline columns
+    # Construct DataFrame with exact column names expected by ColumnTransformer
     input_df = pd.DataFrame([{
         "gender": data.gender,
         "age": float(data.age),
@@ -130,17 +135,17 @@ def execute_prediction(data: PredictionInput) -> PredictionOutput:
         "bmi_category": bmi,
         "heart_rate": float(data.heart_rate),
         "daily_steps": float(data.daily_steps),
-        "systolic_bp": systolic_bp,
-        "diastolic_bp": diastolic_bp
+        "systolic_bp": sys_bp,
+        "diastolic_bp": dia_bp
     }])
 
-    # Predict class
+    # Predict class using trained pipeline
     prediction = str(pipeline.predict(input_df)[0])
 
-    # Compute model-derived probability/confidence
+    # Model probability confidence
     if hasattr(pipeline, "predict_proba"):
-        probs = pipeline.predict_proba(input_df)[0]
-        confidence = float(np.max(probs))
+        probabilities = pipeline.predict_proba(input_df)[0]
+        confidence = float(np.max(probabilities))
     else:
         confidence = 1.0
 
@@ -153,14 +158,19 @@ def execute_prediction(data: PredictionInput) -> PredictionOutput:
 
 
 # ---------------------------------------------------------------------------
-# Routes
+# 5. REST Endpoints
 # ---------------------------------------------------------------------------
+@app.get("/api/health", response_model=HealthOutput, status_code=status.HTTP_200_OK)
+@app.get("/health", response_model=HealthOutput, status_code=status.HTTP_200_OK)
+def health_check():
+    return HealthOutput(status="healthy")
+
+
 @app.post("/api/predict", response_model=PredictionOutput, status_code=status.HTTP_200_OK)
 @app.post("/predict", response_model=PredictionOutput, status_code=status.HTTP_200_OK)
-@app.post("/", response_model=PredictionOutput, status_code=status.HTTP_200_OK)
-def predict_endpoint(payload: PredictionInput):
+def predict_disorder(payload: PredictionInput):
     try:
-        return execute_prediction(payload)
+        return run_inference(payload)
     except FileNotFoundError as e:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -169,17 +179,11 @@ def predict_endpoint(payload: PredictionInput):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Prediction error: {str(e)}"
+            detail=f"Inference error: {str(e)}"
         )
-
-
-@app.get("/api/health", response_model=HealthOutput, status_code=status.HTTP_200_OK)
-@app.get("/health", response_model=HealthOutput, status_code=status.HTTP_200_OK)
-def health_endpoint():
-    return HealthOutput(status="healthy")
 
 
 @app.get("/api", status_code=status.HTTP_200_OK)
 @app.get("/", status_code=status.HTTP_200_OK)
-def root_endpoint():
+def root_status():
     return {"message": "Sleep Disorder Classification API is running", "status": "healthy"}
