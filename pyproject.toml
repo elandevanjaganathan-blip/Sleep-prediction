@@ -1,2 +1,15 @@
+[project]
+name = "sleep-prediction"
+version = "1.0.0"
+description = "Machine learning based sleep disorder classification"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi",
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "joblib"
+]
+
 [tool.vercel]
 entrypoint = "api.main:app"
