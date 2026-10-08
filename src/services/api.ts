@@ -45,10 +45,7 @@ const responseSchema = z.object({
 export async function predictSleepDisorder(data: SleepFormData): Promise<PredictionResponse> {
   const validated = inputSchema.safeParse(data);
   if (!validated.success) throw new Error('Please check your assessment details before submitting.');
-  const baseUrl = import.meta.env['VITE_API_BASE_URL']?.trim().replace(/\/+$/, '');
-  if (!baseUrl) {
-    throw new Error('The prediction service is not connected yet. Set VITE_API_BASE_URL to your Python API address to enable predictions.');
-  }
+  const baseUrl = import.meta.env['VITE_API_BASE_URL']?.trim().replace(/\/+$/, '') || '';
 
 
 

@@ -68,8 +68,8 @@ class PredictionResponse(BaseModel):
     confidence: float
 
 
-@app.get("/", status_code=status.HTTP_200_OK)
-def root():
+@app.get("/api", status_code=status.HTTP_200_OK)
+def api_root():
     return {"message": "Sleep Disorder Classification API is running"}
 
 

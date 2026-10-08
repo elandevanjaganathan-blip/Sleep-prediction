@@ -3,15 +3,15 @@
   "rewrites": [
     {
       "source": "/predict",
-      "destination": "/api/index.py"
+      "destination": "/api/main.py"
     },
     {
       "source": "/health",
-      "destination": "/api/index.py"
+      "destination": "/api/main.py"
     },
     {
       "source": "/api/:path*",
-      "destination": "/api/index.py"
+      "destination": "/api/main.py"
     }
   ]
 }
