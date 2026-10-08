@@ -1,187 +1,192 @@
 # Sleep Disorder Classification
 
-An end-to-end Machine Learning web application designed to assess sleep health and predict the likelihood of sleep disorders (**None**, **Insomnia**, or **Sleep Apnea**) using clinical and lifestyle factors.
+A lightweight, full-stack Machine Learning application designed to predict sleep disorders (**None**, **Insomnia**, or **Sleep Apnea**) based on personal, lifestyle, and biometric factors.
+
+Built with **HTML, CSS, Vanilla JavaScript** on the frontend, a **Python FastAPI** serverless backend, and **scikit-learn** for machine learning inference, deployed seamlessly on **Vercel**.
 
 ---
 
-## Project Overview
+## 📌 Project Overview
 
-This project pairs an interactive React + TypeScript frontend with a high-performance Python FastAPI backend. The machine learning pipeline trains, evaluates, and compares multiple classification models (**Logistic Regression**, **Random Forest**, and **Support Vector Machine**) on the **Sleep Health and Lifestyle Dataset**, deploying the highest-accuracy model with full preprocessing preservation.
+Sleep health plays a critical role in overall physical and mental wellbeing. This project trains and benchmarks multiple classification algorithms on clinical sleep and lifestyle parameters, packaging the best-performing model into an interactive, beginner-friendly web application.
 
----
-
-## Project Architecture
-
-```
-+-------------------------------------------------------------+
-|                      React Frontend                         |
-|  - Assessment Form (biometrics, sleep habits, lifestyle)    |
-|  - Real-time client-side validation (Zod + React Hook Form) |
-|  - Displays Predicted Disorder & Model Confidence Score     |
-+-------------------------------------------------------------+
-                              │
-                    HTTP POST │ /predict
-                    (JSON)    ▼
-+-------------------------------------------------------------+
-|               FastAPI Backend (Vercel API / Uvicorn)        |
-|  - Request schema validation (Pydantic)                     |
-|  - CORS middleware support                                  |
-|  - REST endpoints: GET /, GET /health, POST /predict        |
-+-------------------------------------------------------------+
-                              │
-                              ▼
-+-------------------------------------------------------------+
-|                  ML Preprocessing & Inference               |
-|  - Feature transformation (ColumnTransformer)               |
-|    * Categorical: One-Hot Encoding (gender, occupation, BMI)|
-|    * Numerical: Standard Scaling (BP split, steps, HR, etc.)|
-|  - Best Trained Classifier (SVM / Random Forest)            |
-|  - Outputs: Predicted Class & Confidence Probability        |
-+-------------------------------------------------------------+
-```
+- **Frontend**: Clean Vanilla HTML5, CSS3, and JavaScript (Zero external framework dependencies).
+- **Backend**: Python FastAPI serverless functions optimized for Vercel.
+- **Machine Learning**: End-to-end scikit-learn Pipeline (preprocessing + Support Vector Machine).
+- **Accuracy**: **97.33%** test accuracy with real model-derived probability estimates.
 
 ---
 
-## Technology Stack
+## 🎯 Features
 
-- **Frontend**: React 19, TypeScript, TanStack Router, Tailwind CSS, Lucide Icons, Zod, React Hook Form
-- **Backend**: Python 3.12, FastAPI, Uvicorn, Pydantic
-- **Machine Learning**: Scikit-Learn, Pandas, NumPy, Joblib
-- **Deployment**: Vercel (Serverless Python + Vite Frontend)
+- **End-to-End ML Pipeline**: Automated feature scaling, one-hot encoding, and classification wrapped in a reusable `Pipeline`.
+- **Three Models Evaluated**: Logistic Regression, Random Forest, and Support Vector Machine (SVM).
+- **Interactive UI**: Responsive assessment form, accessible inputs, instant validation, dynamic result badges, and confidence bars.
+- **Vercel Serverless Ready**: Designed specifically for Vercel's Python serverless runtime with zero always-on server overhead.
+- **Clean Architecture**: Clear separation of frontend, serverless API, and ML pipeline without bloated node frameworks.
 
 ---
 
-## Folder Structure
+## 🛠️ Technology Stack
+
+| Component | Technology | Description |
+| :--- | :--- | :--- |
+| **Frontend** | HTML5, CSS3, Vanilla JS | Lightweight, responsive interface |
+| **Backend** | Python 3, FastAPI, Pydantic | RESTful API & Serverless Function |
+| **Machine Learning** | scikit-learn, pandas, numpy, joblib | Data preparation & model inference |
+| **Deployment** | Vercel | Static frontend CDN + Python Serverless API |
+
+---
+
+## 📊 Dataset & Features
+
+The model is trained on the **Sleep Health and Lifestyle Dataset** (`ml/data/sleep_health_lifestyle_dataset.csv`):
+- **Total Samples**: 374
+- **Target Feature**: `Sleep Disorder` (`None`, `Insomnia`, `Sleep Apnea`)
+
+### Evaluated Features
+1. **Gender**: Male, Female
+2. **Age**: Age in years (1 – 120)
+3. **Occupation**: Software Engineer, Doctor, Nurse, Teacher, Engineer, Lawyer, etc.
+4. **Sleep Duration**: Hours of sleep per night
+5. **Quality of Sleep**: Rating on a scale of 1 to 10
+6. **Physical Activity Level**: Active minutes per day
+7. **Stress Level**: Rating on a scale of 1 to 10
+8. **BMI Category**: Normal, Overweight, Obese
+9. **Blood Pressure**: Systolic / Diastolic readings (e.g. `120/80`)
+10. **Heart Rate**: Resting heart rate in bpm
+11. **Daily Steps**: Total steps walked per day
+
+---
+
+## 🤖 Model Comparison & Evaluation
+
+All three classification models were trained and evaluated on an 80/20 stratified split:
+
+| Model | Accuracy | Precision | Recall | F1-Score | Status |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Logistic Regression** | 94.67% | 95.09% | 94.67% | 94.64% | Evaluated |
+| **Random Forest** | 94.67% | 94.82% | 94.67% | 94.72% | Evaluated |
+| **Support Vector Machine (SVM)** | **97.33%** | **97.63%** | **97.33%** | **97.32%** | **Selected Best** |
+
+The **Support Vector Machine** with an RBF kernel was selected and persisted as an end-to-end scikit-learn Pipeline at `ml/model/sleep_disorder_model.pkl`.
+
+---
+
+## 📁 Project Structure
 
 ```
 Sleep-prediction/
+│
+├── index.html                   # Semantic HTML5 frontend
+├── style.css                    # Modern responsive stylesheet
+├── script.js                    # Vanilla JS validation & API interaction
+│
 ├── api/
-│   └── index.py                    # Vercel serverless function entrypoint
-├── backend/
-│   ├── app.py                      # FastAPI application
-│   ├── train.py                    # ML model training and evaluation script
-│   ├── predict.py                  # Prediction inference service
-│   ├── test_backend.py             # Test suite for backend endpoints & validation
-│   ├── requirements.txt            # Python dependencies
-│   ├── data/
-│   │   └── sleep_health_lifestyle_dataset.csv  # Dataset
+│   ├── predict.py               # FastAPI serverless prediction function
+│   └── health.py                # Health check endpoint
+│
+├── ml/
+│   ├── train.py                 # Training script & model comparison
 │   ├── model/
-│   │   ├── sleep_disorder_model.pkl            # Best trained ML model
-│   │   ├── preprocessor.pkl                    # Feature scaler & encoder
-│   │   ├── metadata.pkl                        # Model metrics & metadata
-│   │   └── metadata.json                       # Readable evaluation results
-│   └── README.md
-├── vercel.json                     # Vercel serverless routing configuration
-├── requirements.txt                # Root requirements for Vercel Python runtime
-├── src/                            # React application source code
-│   ├── components/                 # UI & Form components
-│   ├── routes/                     # TanStack Router pages
-│   └── services/                   # Frontend API client
-├── .env.example                    # Environment variable template
-├── package.json                    # Frontend dependencies and scripts
-└── README.md                       # Project documentation
+│   │   ├── sleep_disorder_model.pkl  # Trained Pipeline artifact
+│   │   └── metadata.json        # Evaluation metrics and class labels
+│   └── data/
+│       └── sleep_health_lifestyle_dataset.csv # Dataset
+│
+├── requirements.txt             # Python dependencies
+├── vercel.json                  # Vercel routing rules
+├── .gitignore                   # Git ignore configurations
+└── README.md                    # Project documentation
 ```
 
 ---
 
-## Deploying on Vercel
+## 🚀 How to Run Locally
 
-### Option 1: Vercel GitHub Integration (Recommended)
-
-1. Push your repository to GitHub (`git push origin main`).
-2. Go to your [Vercel Dashboard](https://vercel.com/dashboard) and click **"Add New"** $\rightarrow$ **"Project"**.
-3. Import your GitHub repository `Sleep-prediction`.
-4. Vercel automatically detects `vercel.json`, `requirements.txt`, and `api/index.py`.
-5. Under **Environment Variables** (Optional):
-   - Set `VITE_API_BASE_URL` to your Vercel deployment URL e.g. `https://your-project.vercel.app` (or leave empty if using the single-domain rewrite).
-6. Click **Deploy**. Vercel will build both the React frontend and Python FastAPI backend automatically!
-
----
-
-### Option 2: Deploy via Vercel CLI
-
-In your terminal at the project root:
-
+### 1. Clone the Repository
 ```bash
-npm install -g vercel
-vercel
+git clone https://github.com/elandevanjaganathan-blip/Sleep-prediction.git
+cd Sleep-prediction
 ```
 
-Follow the prompts to deploy instantly to your Vercel account.
-
----
-
-## Local Development Setup
-
-### 1. Backend Setup
-
-Open a terminal and navigate to the `backend` directory:
-
+### 2. Install Python Dependencies
 ```bash
-cd backend
 pip install -r requirements.txt
-python train.py
-uvicorn app:app --reload --port 8000
 ```
 
-The backend will be available at:
-- **API URL**: `http://localhost:8000`
-- **Interactive Docs**: `http://localhost:8000/docs`
-- **Health Check**: `http://localhost:8000/health`
-
----
-
-### 2. Frontend Setup
-
-In a new terminal window at the project root:
-
+### 3. (Optional) Re-train the Model
 ```bash
-cp .env.example .env.local
-npm install
-npm run dev
+python ml/train.py
 ```
 
-Open your browser at `http://localhost:5173`.
+### 4. Run the Backend API
+```bash
+uvicorn api.predict:app --reload --port 8000
+```
+
+### 5. Launch the Frontend
+You can open `index.html` directly in any web browser, or serve it using Python's built-in HTTP server:
+```bash
+python -m http.server 3000
+```
+Open `http://localhost:3000` to interact with the application.
 
 ---
 
-## API Reference
+## ☁️ Deployment to Vercel
 
-### `POST /predict`
+1. Push your changes to GitHub:
+   ```bash
+   git add .
+   git commit -m "Deploy sleep disorder prediction project"
+   git push origin main
+   ```
+2. Import the repository in [Vercel](https://vercel.com).
+3. Vercel automatically detects the static HTML/CSS/JS frontend and sets up Python serverless functions from the `api/` directory.
+4. No environment variables or custom build commands are needed.
 
-**Request Body (`application/json`):**
+---
+
+## 📡 API Endpoints
+
+### 1. Health Status
+- **Method**: `GET /api/health`
+- **Response**:
 ```json
 {
-  "gender": "Female",
+  "status": "healthy"
+}
+```
+
+### 2. Predict Sleep Disorder
+- **Method**: `POST /api/predict`
+- **Request Body**:
+```json
+{
+  "gender": "Male",
   "age": 28,
-  "occupation": "Teacher",
-  "bmi_category": "Normal",
-  "sleep_duration": 7.5,
+  "occupation": "Doctor",
+  "sleep_duration": 7.8,
   "quality_of_sleep": 7,
-  "physical_activity_level": 45,
-  "stress_level": 4,
+  "physical_activity_level": 75,
+  "stress_level": 6,
+  "bmi_category": "Normal",
   "blood_pressure": "120/80",
-  "heart_rate": 72,
+  "heart_rate": 70,
   "daily_steps": 8000
 }
 ```
-
-**Response (`application/json`):**
+- **Response**:
 ```json
 {
   "prediction": "None",
-  "confidence": 0.91
+  "confidence": 0.92
 }
 ```
 
 ---
 
-## Model Evaluation Summary
+## ⚠️ Disclaimer
 
-| Model | Accuracy | Precision | Recall | F1-Score |
-|---|---|---|---|---|
-| **Support Vector Machine (SVM)** | **97.33%** | **0.9763** | **0.9733** | **0.9732** |
-| Random Forest Classifier | 96.00% | 0.9606 | 0.9600 | 0.9599 |
-| Logistic Regression | 94.67% | 0.9509 | 0.9467 | 0.9464 |
-
-*Best performing model (SVM) is automatically exported and served by the API.*
+This application is developed strictly for **educational and academic research purposes** and does not constitute medical advice or a clinical diagnosis. Always seek the advice of a qualified healthcare provider for sleep or health-related concerns.

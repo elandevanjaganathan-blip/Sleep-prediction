@@ -1,47 +1,14 @@
-# Node & Bundler
-node_modules/
-dist/
-dist-ssr/
-.output/
-.vinxi/
-.tanstack/**
-.nitro/
-
-# Environment and Secrets
-.env
-.env.*
-!.env.example
-*.local
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-pnpm-debug.log*
-
-# Python
 __pycache__/
 *.py[cod]
 *$py.class
 .venv/
 venv/
 env/
-ENV/
-.pytest_cache/
-
-# Cloudflare / Wrangler
-.wrangler/
-.dev.vars
-
-# Editor & OS
-.vscode/*
-!.vscode/extensions.json
-.idea/
+.env
+.env.*
 .DS_Store
 Thumbs.db
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.vercel/
+node_modules/
+.idea/
+.vscode/

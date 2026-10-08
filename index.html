@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sleep Disorder Classification | Machine Learning Project</title>
+  <meta name="description" content="Analyze sleep, lifestyle, and health-related factors using a machine learning model to identify possible sleep disorders.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="#home" class="logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <span>Sleep Disorder Classification</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#home" class="nav-link">Home</a>
+        <a href="#prediction" class="nav-link">Prediction</a>
+        <a href="#about" class="nav-link">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section id="home" class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Machine Learning Based Sleep Health Prediction
+      </div>
+      <h1 class="hero-title">Sleep Disorder<br><span class="gradient-text">Classification</span></h1>
+      <p class="hero-subtitle">
+        Analyze sleep, lifestyle, and health-related factors using a machine learning model to identify possible sleep disorders.
+      </p>
+      <div class="hero-actions">
+        <a href="#prediction" class="btn btn-primary">Start Prediction</a>
+        <a href="#how-it-works" class="btn btn-secondary">How It Works</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FEATURE CARDS ==================== -->
+  <section class="features-section">
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon icon-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z"/></svg>
+          </div>
+          <h3>ML-Based Prediction</h3>
+          <p>Trained on clinical lifestyle metrics using a Support Vector Machine pipeline with 97.3% accuracy.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <h3>Sleep Health Analysis</h3>
+          <p>Holistic examination correlating sleep quality, stress levels, blood pressure, and daily activity patterns.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <h3>Fast Results</h3>
+          <p>Instant model inference with real probability confidence scores delivered in milliseconds.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== HOW IT WORKS ==================== -->
+  <section id="how-it-works" class="how-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">THREE EASY STEPS</span>
+        <h2 class="section-title">How It Works</h2>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <h4>Enter Your Details</h4>
+          <p>Provide lifestyle, sleep duration, and biometric parameters in the assessment form.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <h4>ML Model Analyzes Data</h4>
+          <p>The preprocessed pipeline evaluates your input against trained clinical sleep patterns.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <h4>View Prediction Result</h4>
+          <p>Receive your classification (None, Insomnia, or Sleep Apnea) with a confidence score.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PREDICTION FORM & RESULTS ==================== -->
+  <section id="prediction" class="prediction-section">
+    <div class="container form-container">
+      <div class="section-header">
+        <span class="section-tag">ASSESSMENT FORM</span>
+        <h2 class="section-title">Sleep Health Assessment</h2>
+        <p class="section-desc">Fill in your health and lifestyle metrics below to generate a prediction.</p>
+      </div>
+
+      <!-- Result Card (Initially Hidden) -->
+      <div id="resultCard" class="result-card hidden">
+        <div class="result-header">
+          <svg class="result-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <h3>Prediction Result</h3>
+        </div>
+
+        <div class="result-body">
+          <div class="result-item">
+            <span class="result-label">Sleep Disorder:</span>
+            <span id="resultDisorder" class="result-value disorder-badge">Loading...</span>
+          </div>
+
+          <div class="result-item">
+            <span class="result-label">Model Confidence:</span>
+            <span id="resultConfidence" class="result-value">--%</span>
+          </div>
+
+          <div class="confidence-bar-container">
+            <div id="confidenceBar" class="confidence-bar" style="width: 0%;"></div>
+          </div>
+
+          <p id="resultExplanation" class="result-explanation"></p>
+        </div>
+
+        <div class="result-disclaimer">
+          ⚠️ <strong>Medical Disclaimer:</strong> This result is generated by a machine learning model for educational purposes and should not be considered a medical diagnosis.
+        </div>
+
+        <button type="button" id="predictAgainBtn" class="btn btn-secondary btn-block">Predict Again</button>
+      </div>
+
+      <!-- Error Alert (Initially Hidden) -->
+      <div id="errorAlert" class="error-alert hidden">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="errorMessage">Unable to connect to the prediction service. Please try again.</span>
+      </div>
+
+      <!-- Input Form -->
+      <form id="sleepForm" class="sleep-form" novalidate>
+        
+        <!-- Category 1: Personal Information -->
+        <fieldset class="form-group-card">
+          <legend class="group-title">
+            <span class="group-num">1</span> Personal Information
+          </legend>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="gender">Gender <span class="required">*</span></label>
+              <select id="gender" name="gender" required>
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+              <span class="field-error" id="genderError"></span>
+            </div>
+
+            <div class="field">
+              <label for="age">Age (years) <span class="required">*</span></label>
+              <input type="number" id="age" name="age" min="1" max="120" placeholder="e.g. 30" required>
+              <span class="field-error" id="ageError"></span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="occupation">Occupation <span class="required">*</span></label>
+            <select id="occupation" name="occupation" required>
+              <option value="">Select occupation</option>
+              <option value="Software Engineer">Software Engineer</option>
+              <option value="Doctor">Doctor</option>
+              <option value="Engineer">Engineer</option>
+              <option value="Lawyer">Lawyer</option>
+              <option value="Manager">Manager</option>
+              <option value="Nurse">Nurse</option>
+              <option value="Sales Representative">Sales Representative</option>
+              <option value="Salesperson">Salesperson</option>
+              <option value="Scientist">Scientist</option>
+              <option value="Teacher">Teacher</option>
+              <option value="Accountant">Accountant</option>
+            </select>
+            <span class="field-error" id="occupationError"></span>
+          </div>
+        </fieldset>
+
+        <!-- Category 2: Sleep & Lifestyle Information -->
+        <fieldset class="form-group-card">
+          <legend class="group-title">
+            <span class="group-num">2</span> Sleep & Lifestyle Information
+          </legend>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="sleep_duration">Sleep Duration (hours/night) <span class="required">*</span></label>
+              <input type="number" id="sleep_duration" name="sleep_duration" min="1.0" max="24.0" step="0.1" placeholder="e.g. 7.5" required>
+              <span class="field-error" id="sleep_durationError"></span>
+            </div>
+
+            <div class="field">
+              <label for="quality_of_sleep">Quality of Sleep (1 – 10) <span class="required">*</span></label>
+              <input type="number" id="quality_of_sleep" name="quality_of_sleep" min="1" max="10" placeholder="e.g. 8" required>
+              <span class="field-error" id="quality_of_sleepError"></span>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="physical_activity_level">Physical Activity (minutes/day) <span class="required">*</span></label>
+              <input type="number" id="physical_activity_level" name="physical_activity_level" min="0" max="720" placeholder="e.g. 60" required>
+              <span class="field-error" id="physical_activity_levelError"></span>
+            </div>
+
+            <div class="field">
+              <label for="stress_level">Stress Level (1 – 10) <span class="required">*</span></label>
+              <input type="number" id="stress_level" name="stress_level" min="1" max="10" placeholder="e.g. 5" required>
+              <span class="field-error" id="stress_levelError"></span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Category 3: Health & Biometric Information -->
+        <fieldset class="form-group-card">
+          <legend class="group-title">
+            <span class="group-num">3</span> Health & Biometric Information
+          </legend>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="bmi_category">BMI Category <span class="required">*</span></label>
+              <select id="bmi_category" name="bmi_category" required>
+                <option value="">Select BMI Category</option>
+                <option value="Normal">Normal Weight</option>
+                <option value="Overweight">Overweight</option>
+                <option value="Obese">Obese</option>
+              </select>
+              <span class="field-error" id="bmi_categoryError"></span>
+            </div>
+
+            <div class="field">
+              <label for="blood_pressure">Blood Pressure (mmHg) <span class="required">*</span></label>
+              <input type="text" id="blood_pressure" name="blood_pressure" placeholder="e.g. 120/80" maxlength="7" required>
+              <span class="field-hint">Format: Systolic/Diastolic (e.g., 120/80)</span>
+              <span class="field-error" id="blood_pressureError"></span>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="heart_rate">Heart Rate (bpm) <span class="required">*</span></label>
+              <input type="number" id="heart_rate" name="heart_rate" min="30" max="220" placeholder="e.g. 72" required>
+              <span class="field-error" id="heart_rateError"></span>
+            </div>
+
+            <div class="field">
+              <label for="daily_steps">Daily Steps <span class="required">*</span></label>
+              <input type="number" id="daily_steps" name="daily_steps" min="0" max="50000" placeholder="e.g. 7500" required>
+              <span class="field-error" id="daily_stepsError"></span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Submit & Reset Buttons -->
+        <div class="form-actions">
+          <button type="submit" id="submitBtn" class="btn btn-primary btn-large">
+            <span id="btnText">Predict Sleep Disorder</span>
+            <span id="btnLoader" class="loader hidden"></span>
+          </button>
+          <button type="reset" id="resetBtn" class="btn btn-outline">Reset</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ==================== ABOUT SECTION ==================== -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <div class="about-card">
+        <div class="section-header text-left">
+          <span class="section-tag">PROJECT BACKGROUND</span>
+          <h2 class="section-title">About This Project</h2>
+        </div>
+        <p class="about-text">
+          The <strong>Sleep Disorder Classification</strong> project demonstrates supervised machine learning classification using biometric and lifestyle data. By examining parameters like sleep duration, physical activity, blood pressure, and stress levels, our model classifies subjects into one of three outcomes: <strong>None</strong> (healthy), <strong>Insomnia</strong>, or <strong>Sleep Apnea</strong>.
+        </p>
+        <p class="about-text">
+          Multiple classification algorithms were benchmarked on the clinical dataset, including <strong>Logistic Regression</strong>, <strong>Random Forest</strong>, and <strong>Support Vector Machine (SVM)</strong>. The best-performing pipeline—an SVM with standard feature scaling and one-hot encoding—achieved <strong>97.33% accuracy</strong> on the stratified test set.
+        </p>
+        <div class="about-metrics-grid">
+          <div class="about-metric">
+            <span class="metric-val">374</span>
+            <span class="metric-lbl">Dataset Records</span>
+          </div>
+          <div class="about-metric">
+            <span class="metric-val">12</span>
+            <span class="metric-lbl">Features Evaluated</span>
+          </div>
+          <div class="about-metric">
+            <span class="metric-val">97.33%</span>
+            <span class="metric-lbl">SVM Accuracy</span>
+          </div>
+          <div class="about-metric">
+            <span class="metric-val">3</span>
+            <span class="metric-lbl">Target Classes</span>
+          </div>
+        </div>
+        <div class="disclaimer-box">
+          <p><strong>Educational Disclaimer:</strong> This application is for educational and academic research purposes only and is not a medical diagnosis. Individuals experiencing persistent sleep difficulties should consult a certified healthcare professional.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <p>Sleep Disorder Classification | Machine Learning Project</p>
+      <p class="footer-sub">Built with Vanilla HTML, CSS, JavaScript & Python FastAPI</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
