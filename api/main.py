@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse, Response
 from pydantic import BaseModel, Field, field_validator
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -191,25 +191,41 @@ def predict_disorder(payload: PredictionInput):
         )
 
 
-@app.get("/", response_class=FileResponse)
+def find_frontend_file(filename: str) -> Path:
+    candidates = [
+        BASE_DIR / filename,
+        Path.cwd() / filename,
+        Path(__file__).resolve().parent / filename,
+        Path("/var/task") / filename
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    raise FileNotFoundError(f"{filename} not found in candidate paths: {candidates}")
+
+
+@app.get("/", response_class=HTMLResponse)
 def serve_index():
-    index_file = BASE_DIR / "index.html"
-    if not index_file.exists():
-        raise HTTPException(status_code=404, detail="index.html not found")
-    return FileResponse(index_file, media_type="text/html")
+    try:
+        path = find_frontend_file("index.html")
+        return HTMLResponse(content=path.read_text(encoding="utf-8"))
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"index.html error: {str(e)}")
 
 
-@app.get("/style.css", response_class=FileResponse)
+@app.get("/style.css")
 def serve_css():
-    css_file = BASE_DIR / "style.css"
-    if not css_file.exists():
-        raise HTTPException(status_code=404, detail="style.css not found")
-    return FileResponse(css_file, media_type="text/css")
+    try:
+        path = find_frontend_file("style.css")
+        return Response(content=path.read_text(encoding="utf-8"), media_type="text/css")
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"style.css error: {str(e)}")
 
 
-@app.get("/script.js", response_class=FileResponse)
+@app.get("/script.js")
 def serve_js():
-    js_file = BASE_DIR / "script.js"
-    if not js_file.exists():
-        raise HTTPException(status_code=404, detail="script.js not found")
-    return FileResponse(js_file, media_type="application/javascript")
+    try:
+        path = find_frontend_file("script.js")
+        return Response(content=path.read_text(encoding="utf-8"), media_type="application/javascript")
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"script.js error: {str(e)}")
