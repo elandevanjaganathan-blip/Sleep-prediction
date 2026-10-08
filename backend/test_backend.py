@@ -15,10 +15,10 @@ client = TestClient(app)
 
 
 def test_root():
-    response = client.get("/api")
+    response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"message": "Sleep Disorder Classification API is running"}
-    print("[PASS] GET /api endpoint test passed")
+    print("[PASS] GET / endpoint test passed")
 
 
 def test_health():

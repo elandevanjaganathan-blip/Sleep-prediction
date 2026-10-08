@@ -7,7 +7,14 @@ Endpoints:
 - POST /predict  : ML model inference for sleep disorder classification
 """
 
+import sys
 import os
+
+# Ensure backend directory is in sys.path so modules import correctly regardless of CWD
+backend_dir = os.path.dirname(os.path.abspath(__file__))
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+
 from typing import Literal
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,16 +28,16 @@ app = FastAPI(
 )
 
 # CORS Configuration
-# Supports frontend running on common local development ports or custom origin via env
+# Supports frontend running on Vercel, common local ports, or custom origins
 raw_origins = os.getenv(
     "CORS_ORIGINS",
-    "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000,http://localhost:4173"
+    "*"
 )
 allowed_origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins if allowed_origins else ["*"],
+    allow_origins=["*"] if "*" in allowed_origins or not allowed_origins else allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -68,8 +75,8 @@ class PredictionResponse(BaseModel):
     confidence: float
 
 
-@app.get("/api", status_code=status.HTTP_200_OK)
-def api_root():
+@app.get("/", status_code=status.HTTP_200_OK)
+def root():
     return {"message": "Sleep Disorder Classification API is running"}
 
 

@@ -139,3 +139,17 @@ The server will start at `http://localhost:8000`.
   "confidence": 0.98
 }
 ```
+
+---
+
+## Deploying Backend to Render
+
+1. Create a new **Web Service** on [Render](https://dashboard.render.com).
+2. Connect your GitHub repository (`Sleep-prediction`).
+3. Set the following build and runtime settings:
+   - **Environment**: `Python 3`
+   - **Build Command**: `pip install -r backend/requirements.txt`
+   - **Start Command**: `uvicorn backend.app:app --host 0.0.0.0 --port $PORT`
+4. Once deployed, copy your Render web service URL (e.g. `https://sleep-prediction-backend.onrender.com`).
+5. Set `VITE_API_BASE_URL` in your Vercel project Environment Variables pointing to your Render backend URL.
+
