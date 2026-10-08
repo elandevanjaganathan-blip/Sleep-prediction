@@ -11,7 +11,10 @@ import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field, field_validator
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ---------------------------------------------------------------------------
 # 1. FastAPI App Initialization & CORS
@@ -106,7 +109,8 @@ class PredictionOutput(BaseModel):
 
 
 class HealthOutput(BaseModel):
-    status: str
+    message: str = "Sleep Disorder Classification API is running"
+    status: str = "healthy"
 
 
 # ---------------------------------------------------------------------------
@@ -162,8 +166,12 @@ def run_inference(data: PredictionInput) -> PredictionOutput:
 # ---------------------------------------------------------------------------
 @app.get("/api/health", response_model=HealthOutput, status_code=status.HTTP_200_OK)
 @app.get("/health", response_model=HealthOutput, status_code=status.HTTP_200_OK)
+@app.get("/api", response_model=HealthOutput, status_code=status.HTTP_200_OK)
 def health_check():
-    return HealthOutput(status="healthy")
+    return {
+        "message": "Sleep Disorder Classification API is running",
+        "status": "healthy"
+    }
 
 
 @app.post("/api/predict", response_model=PredictionOutput, status_code=status.HTTP_200_OK)
@@ -183,7 +191,25 @@ def predict_disorder(payload: PredictionInput):
         )
 
 
-@app.get("/api", status_code=status.HTTP_200_OK)
-@app.get("/", status_code=status.HTTP_200_OK)
-def root_status():
-    return {"message": "Sleep Disorder Classification API is running", "status": "healthy"}
+@app.get("/", response_class=FileResponse)
+def serve_index():
+    index_file = BASE_DIR / "index.html"
+    if not index_file.exists():
+        raise HTTPException(status_code=404, detail="index.html not found")
+    return FileResponse(index_file, media_type="text/html")
+
+
+@app.get("/style.css", response_class=FileResponse)
+def serve_css():
+    css_file = BASE_DIR / "style.css"
+    if not css_file.exists():
+        raise HTTPException(status_code=404, detail="style.css not found")
+    return FileResponse(css_file, media_type="text/css")
+
+
+@app.get("/script.js", response_class=FileResponse)
+def serve_js():
+    js_file = BASE_DIR / "script.js"
+    if not js_file.exists():
+        raise HTTPException(status_code=404, detail="script.js not found")
+    return FileResponse(js_file, media_type="application/javascript")
